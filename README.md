@@ -1,148 +1,71 @@
-# SQL Queries Documentation
+# SQL Concepts and Use Cases
 
-## Table of Contents
-1. [Introduction](#introduction)
-2. [Query Structure and Syntax](#query-structure-and-syntax)
-3. [JOIN Operations](#join-operations)
-4. [WHERE Clause Conditions and Operators](#where-clause-conditions-and-operators)
-5. [Aggregation Functions](#aggregation-functions)
-6. [GROUP BY and HAVING Clauses](#group-by-and-having-clauses)
-7. [Subqueries and Common Table Expressions (CTEs)](#subqueries-and-ctes)
-8. [Window Functions](#window-functions)
-9. [Advanced SQL Features](#advanced-sql-features)
-10. [Table Relationships and Keys](#table-relationships-and-keys)
-11. [Query Optimization Techniques](#query-optimization-techniques)
-12. [Best Practices](#best-practices)
-13. [Troubleshooting Common Issues](#troubleshooting-common-issues)
-14. [Glossary of Terms](#glossary-of-terms)
-
-## Introduction
-This document provides a detailed explanation of various SQL concepts used in queries, ranging from basic syntax to advanced features like window functions and query optimization techniques. The document is designed for both beginners and experienced developers, covering practical examples from the provided queries to illustrate the concepts and best practices for efficient SQL development.
+## Overview
+This documentation provides a concise explanation of each SQL concept used in the provided queries. It serves as a quick reference to understand what each query does and when it can be applied.
 
 ---
 
-## Query Structure and Syntax
-### Overview
-SQL queries retrieve and manipulate data using a specific structure:
-- **SELECT**: Defines the columns to retrieve.
-- **FROM**: Specifies the table(s) from which to extract data.
-- **WHERE**: Filters rows based on specific conditions.
-- **GROUP BY**: Groups rows sharing a common attribute to perform aggregations.
-- **ORDER BY**: Sorts the result set.
-- **LIMIT**: Restricts the number of returned rows.
+## 1. **Basic Query Structure**
 
-### Example
+### Query Example:
 ```sql
 SELECT customer_id
-FROM Customer
-GROUP BY customer_id
-HAVING COUNT(DISTINCT product_key) = (SELECT COUNT(product_key) FROM Product);
+FROM Customer;
 ```
 
-### Syntax Variations
-- SQL statements may use clauses like **JOIN**, **HAVING**, **UNION**, and **CASE** for data manipulation and filtering.
-
-### Best Practices
-- Use explicit column names instead of `SELECT *` for better performance and clarity.
-- Align and format queries for readability.
-
-### Common Pitfalls
-- Using `SELECT *` may result in performance issues and unintended consequences when the table structure changes.
-
-### Performance Considerations
-- Index columns used in **WHERE**, **JOIN**, and **ORDER BY** clauses to optimize query performance.
+### Use Case:
+- Retrieve data from a single table.
+- Use **SELECT** and **FROM** to define what to retrieve and from where.
 
 ---
 
-## JOIN Operations
-### Overview
-**JOIN** operations combine rows from multiple tables based on related columns. Types of joins include:
-- **INNER JOIN**: Retrieves rows matching in both tables.
-- **LEFT JOIN**: Retrieves all rows from the left table and matching rows from the right, with NULLs if no match.
-- **RIGHT JOIN**: Similar to **LEFT JOIN** but includes all rows from the right table.
-- **FULL OUTER JOIN**: Returns rows when there's a match in either table.
+## 2. **JOIN Operations**
 
-### Examples
+### Query Example:
 ```sql
 SELECT product_name, year, price
 FROM Sales s
 JOIN Product p ON p.product_id = s.product_id;
 ```
 
-### When and Why to Use
-- **JOIN** operations are necessary when accessing data spread across multiple tables connected by foreign keys.
-
-### Syntax and Variations
-- **INNER JOIN**: The default and most common type.
-- **LEFT JOIN**: Used when all rows from one table are required, regardless of matches.
-
-### Best Practices
-- Index join columns for better performance.
-- Always use explicit column names in joins to avoid ambiguity.
-
-### Performance Considerations
-- Large table joins can be resource-intensive; use indexes and consider filtering with **WHERE**.
+### Use Case:
+- Combine rows from multiple tables based on a related column (e.g., **INNER JOIN**, **LEFT JOIN**).
+- Use when data is spread across multiple tables.
 
 ---
 
-## WHERE Clause Conditions and Operators
-### Overview
-The **WHERE** clause filters rows based on conditions, using operators like:
-- **=, <, >, !=**: Standard comparison.
-- **LIKE**: Pattern matching.
-- **IN**: Checks for matches in a list.
-- **BETWEEN**: Filters within a range.
-- **IS NULL**: Checks for NULL values.
+## 3. **WHERE Clause**
 
-### Example
+### Query Example:
 ```sql
 SELECT product_id
 FROM products
 WHERE low_fats = 'Y' AND recyclable = 'Y';
 ```
 
-### Syntax Variations
-- Combine multiple conditions using **AND** and **OR**.
-- Use **REGEXP** for more complex pattern matching.
-
-### Best Practices
-- Use indexed columns in **WHERE** clauses for faster lookups.
-- Avoid calculations in **WHERE** conditions.
-
-### Performance Considerations
-- Ensure columns frequently used in conditions are indexed.
+### Use Case:
+- Filter rows based on conditions.
+- Commonly used for conditional selection and data filtering.
 
 ---
 
-## Aggregation Functions
-### Overview
-Aggregation functions compute summary statistics across rows:
-- **SUM()**, **AVG()**, **COUNT()**, **MIN()**, **MAX()**.
+## 4. **GROUP BY**
 
-### Example
+### Query Example:
 ```sql
 SELECT user_id, COUNT(DISTINCT follower_id) AS followers_count
 FROM Followers
 GROUP BY user_id;
 ```
 
-### Syntax and Variations
-- Aggregations are used with **GROUP BY** to summarize data by groups.
-
-### Best Practices
-- Use aggregation functions to efficiently summarize and analyze large datasets.
-
-### Performance Considerations
-- Index columns used in **GROUP BY** for optimized performance.
+### Use Case:
+- Group rows based on a common attribute to perform aggregation (e.g., count followers per user).
 
 ---
 
-## GROUP BY and HAVING Clauses
-### Overview
-- **GROUP BY** organizes rows sharing common properties into groups for aggregation.
-- **HAVING** filters groups based on aggregate conditions, unlike **WHERE**.
+## 5. **HAVING Clause**
 
-### Example
+### Query Example:
 ```sql
 SELECT class
 FROM Courses C1
@@ -150,131 +73,272 @@ GROUP BY class
 HAVING COUNT(DISTINCT student) >= 5;
 ```
 
-### Syntax Variations
-- Use **HAVING** to filter groups after aggregation.
-
-### Best Practices
-- Minimize the number of columns in **GROUP BY** to improve performance.
-
-### Common Pitfalls
-- Misuse of **WHERE** instead of **HAVING** with aggregate functions.
-
-### Performance Considerations
-- Indexing improves the efficiency of grouping and aggregation.
+### Use Case:
+- Filter groups created by **GROUP BY** based on aggregate conditions (e.g., classes with at least 5 students).
 
 ---
 
-## Subqueries and Common Table Expressions (CTEs)
-### Overview
-- **Subqueries** are nested queries within another query.
-- **CTEs** are named temporary result sets defined for clarity and reuse.
+## 6. **Subqueries**
 
-### Example
+### Query Example:
+```sql
+SELECT customer_id
+FROM Customer
+GROUP BY customer_id
+HAVING COUNT(DISTINCT product_key) = (SELECT COUNT(product_key) FROM Product);
+```
+
+### Use Case:
+- Use a nested query within another query for dynamic filtering or value comparison.
+
+---
+
+## 7. **Common Table Expressions (CTEs)**
+
+### Query Example:
 ```sql
 WITH all_ids AS (
-    SELECT customer_id AS id
-    FROM Customer
+    SELECT requester_id AS id
+    FROM RequestAccepted
     UNION ALL
-    SELECT referee_id AS id
-    FROM Customer
+    SELECT accepter_id AS id
+    FROM RequestAccepted
 )
 SELECT id, COUNT(id) AS count_no_trans
 FROM all_ids
 GROUP BY id;
 ```
 
-### When and Why to Use
-- Use subqueries for dynamic filtering and CTEs for modular, readable queries.
-
-### Syntax Variations
-- CTEs begin with **WITH**, while subqueries are enclosed in parentheses.
-
-### Best Practices
-- Prefer CTEs for readability and maintainability when a subquery is reused.
-
-### Performance Considerations
-- Avoid deeply nested subqueries; they may impact performance.
+### Use Case:
+- Define temporary result sets for modular, readable queries, especially useful when reusing the result multiple times.
 
 ---
 
-## Window Functions
-### Overview
-Window functions calculate results over a set of table rows related to the current row, often used for ranking, cumulative sums, or averages.
+## 8. **Aggregate Functions**
 
-### Example
+### Query Example:
+```sql
+SELECT user_id, COUNT(DISTINCT follower_id) AS followers_count
+FROM Followers
+GROUP BY user_id;
+```
+
+### Use Case:
+- Summarize data using functions like **COUNT**, **SUM**, **AVG**, etc., often with **GROUP BY**.
+
+---
+
+## 9. **DISTINCT Keyword**
+
+### Query Example:
+```sql
+SELECT DISTINCT author_id AS id
+FROM Views
+WHERE author_id = viewer_id;
+```
+
+### Use Case:
+- Retrieve unique values, removing duplicates from the result set.
+
+---
+
+## 10. **CASE Statement**
+
+### Query Example:
 ```sql
 SELECT
-    contest_id,
-    ROUND(COUNT(user_id) * 100 / (SELECT COUNT(user_id) FROM Users), 2) as percentage
-FROM Register
-GROUP BY contest_id
-ORDER BY percentage DESC;
+    product_id,
+    CASE WHEN P1.change_date <= '2019-08-16' THEN new_price
+    ELSE IFNULL(
+        (SELECT new_price FROM products P2 
+        WHERE P2.product_id = P1.product_id AND change_date <= '2019-08-16' 
+        ORDER BY change_date DESC LIMIT 1), 10)
+    END AS price
+FROM Products P1;
 ```
 
-### Performance Considerations
-- Partition and order by indexed columns for optimal performance.
+### Use Case:
+- Apply conditional logic directly within SQL queries.
 
 ---
 
-## Advanced SQL Features
-### Overview
-Some advanced SQL features include:
-- **CASE**: Conditional expressions within queries.
-- **UNION**: Combines the result sets of two queries.
-- **DISTINCT**: Ensures unique values in the result set.
+## 11. **UNION and UNION ALL**
 
-### Example
+### Query Example:
 ```sql
-SELECT name, population, area
-FROM World
-WHERE area >= 3000000 OR population >= 25000000;
+(SELECT name FROM Users u LEFT JOIN MovieRating m ON u.user_id = m.user_id GROUP BY name)
+UNION ALL
+(SELECT title FROM MovieRating mr LEFT JOIN Movies m ON mr.movie_id = m.movie_id WHERE LEFT(created_at, 7) = '2020-02');
 ```
 
-### Performance Considerations
-- Be mindful of performance impacts when using complex conditions.
+### Use Case:
+- Combine results from multiple queries into a single result set.
+- **UNION** removes duplicates; **UNION ALL** retains all rows.
 
 ---
 
-## Table Relationships and Keys
-### Overview
-- **Primary Keys** uniquely identify rows.
-- **Foreign Keys** establish relationships between tables.
+## 12. **ORDER BY Clause**
 
-### Best Practices
-- Ensure proper indexing of primary and foreign keys for efficient joins.
-
----
-
-## Query Optimization Techniques
-### Overview
-Optimizing SQL queries is crucial for performance:
-- Index columns used in joins and where conditions.
-- Avoid unnecessary subqueries.
-- Prefer **EXISTS** over **IN** when dealing with large datasets.
-
-### Example
+### Query Example:
 ```sql
-SELECT tweet_id
-FROM Tweets
-WHERE LENGTH(content) > 15;
+SELECT name
+FROM Customer
+WHERE referee_id IS NULL OR referee_id <> 2
+ORDER BY name;
 ```
 
-### Troubleshooting Common Issues
-- Missing indexes can cause slow performance.
-- Complex joins and aggregations without proper filtering can be resource-intensive.
+### Use Case:
+- Sort the result set by one or more columns.
 
 ---
 
-## Best Practices
-1. Use explicit column selection rather than `SELECT *`.
-2. Index frequently used columns.
-3. Break down complex queries into CTEs for clarity.
-4. Always test queries for performance using **EXPLAIN**.
+## 13. **LIMIT Clause**
+
+### Query Example:
+```sql
+SELECT id, COUNT(id) AS num
+FROM all_ids
+GROUP BY id
+ORDER BY num DESC
+LIMIT 1;
+```
+
+### Use Case:
+- Restrict the number of rows returned in the result set.
 
 ---
 
-## Glossary of Terms
-- **Aggregation**: Summarizes multiple rows.
-- **CTE**: A named temporary result set.
-- **Window Function**: A function that computes values across rows related to the current row.
-- **Join**: Combines rows from multiple tables.
+## 14. **Window Functions**
+
+### Query Example:
+```sql
+SELECT
+    ROUND(
+        COUNT(A1.player_id) / (SELECT COUNT(DISTINCT A3.player_id) FROM Activity A3), 2
+    ) AS fraction
+FROM Activity A1;
+```
+
+### Use Case:
+- Perform calculations across a set of rows related to the current row (e.g., ranking, cumulative totals).
+
+---
+
+## 15. **Self-Joins**
+
+### Query Example:
+```sql
+SELECT w1.id
+FROM Weather w1 LEFT JOIN Weather w2 ON DATEDIFF(w1.recordDate, w2.recordDate) = 1
+WHERE w1.temperature > w2.temperature;
+```
+
+### Use Case:
+- Join a table with itself to compare or relate rows within the same table.
+
+---
+
+## 16. **Cross Joins**
+
+### Query Example:
+```sql
+SELECT s.student_id, s.student_name, sub.subject_name, IFNULL(grouped.attended_exams, 0) AS attended_exams
+FROM Students s
+CROSS JOIN Subjects sub;
+```
+
+### Use Case:
+- Combine each row from one table with every row of another (useful for generating combinations).
+
+---
+
+## 17. **LEFT JOIN with NULL Handling**
+
+### Query Example:
+```sql
+SELECT e.name, b.bonus
+FROM Employee e LEFT JOIN Bonus b ON e.empId = b.empId
+WHERE b.bonus IS NULL OR b.bonus < 1000;
+```
+
+### Use Case:
+- Retrieve all rows from the left table and matching rows from the right; filter based on missing data or other conditions.
+
+---
+
+## 18. **Pattern Matching (LIKE)**
+
+### Query Example:
+```sql
+SELECT patient_id, patient_name
+FROM Patients
+WHERE conditions LIKE 'DIAB1%' OR conditions LIKE '% DIAB1%';
+```
+
+### Use Case:
+- Search for patterns within text data using **LIKE** and wildcard characters (`%`).
+
+---
+
+## 19. **CASE with Aggregates**
+
+### Query Example:
+```sql
+SELECT
+    machine_id,
+    ROUND(AVG(CASE WHEN activity_type = 'start' THEN -timestamp ELSE timestamp END) * 2, 3) AS processing_time
+FROM Activity
+GROUP BY machine_id;
+```
+
+### Use Case:
+- Apply conditional logic within aggregate functions to calculate different results based on specific criteria.
+
+---
+
+## 20. **Using EXISTS**
+
+### Query Example:
+```sql
+SELECT customer_id
+FROM Customer
+WHERE EXISTS (
+    SELECT 1
+    FROM Orders o
+    WHERE o.customer_id = Customer.customer_id
+);
+```
+
+### Use Case:
+- Check for the existence of rows that satisfy certain criteria in a subquery.
+
+---
+
+## 21. **Date Functions**
+
+### Query Example:
+```sql
+SELECT activity_date AS day, COUNT(DISTINCT user_id) AS active_users
+FROM Activity
+WHERE activity_date <= '2019-07-27' AND DATEDIFF('2019-07-27', activity_date) <= 30
+GROUP BY day;
+```
+
+### Use Case:
+- Manipulate and filter dates using functions like **DATEDIFF**.
+
+---
+
+## 22. **IN and NOT IN**
+
+### Query Example:
+```sql
+SELECT customer_id
+FROM Visits
+WHERE visit_id NOT IN (SELECT visit_id FROM Transactions);
+```
+
+### Use Case:
+- Filter rows based on whether values are present or absent in a subquery result.
+
+---
